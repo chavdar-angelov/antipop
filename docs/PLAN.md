@@ -6,71 +6,97 @@ The project is a greenfield SvelteKit 5 app. We're building a CQRS-lite + event-
 
 ## Key Decisions
 
-| Decision | Choice | Why |
-|---|---|---|
-| Communication | WebSocket for all responses | Real-time, event-driven architecture. HTTP endpoint is fire-and-forget. |
-| Command routing | Single `/command` POST endpoint | All commands dispatched through one gateway. Returns 200 (accepted) or 400 (unknown command). |
-| MongoDB driver | Native `mongodb` (not Mongoose) | Lighter, full control over document mapping, no schema duplication. |
-| Password hashing | `@node-rs/argon2` | Argon2 is the industry standard. `@node-rs/argon2` is a fast Rust-backed binding. |
-| Event bus | Custom in-process (plain TS) | Simple pub/sub, no external deps. Sufficient for MVP. |
-| Event storage | Dual-write (event store + view model) | Events stored in `domain_events` for audit/replay. View models are the read-optimized projections. |
+| Decision         | Choice                                | Why                                                                                                |
+| ---------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Communication    | WebSocket for all responses           | Real-time, event-driven architecture. HTTP endpoint is fire-and-forget.                            |
+| WebSocket lib    | `ws` (raw)                            | Lightweight, no socket.io overhead. Upgrade handling + per-connection state is all we need.        |
+| WS shared state  | `globalThis` for connection map       | Bridges Vite plugin / custom server context with SvelteKit SSR bundle in same process.             |
+| Command routing  | Single `/command` POST endpoint       | All commands dispatched through one gateway. Returns 200 (accepted) or 400 (unknown command).      |
+| MongoDB driver   | Native `mongodb` (not Mongoose)       | Lighter, full control over document mapping, no schema duplication.                                |
+| Password hashing | `@node-rs/argon2`                     | Argon2 is the industry standard. `@node-rs/argon2` is a fast Rust-backed binding.                  |
+| Event bus        | Custom in-process (plain TS)          | Simple pub/sub, no external deps. Sufficient for MVP.                                              |
+| Event storage    | Dual-write (event store + view model) | Events stored in `domain_events` for audit/replay. View models are the read-optimized projections. |
 
 ## Architecture
 
 ```
-Client → POST /command { command: 'CREATE_USER', payload: {...} }
+Client connects via WebSocket → authenticates (sends userId token) → server maps userId to connection
+
+Client → POST /command { command: 'CREATE_USER', payload: {...}, correlationId: 'abc-123' }
 Client ← HTTP 200 { ok: true }
 
 Command handler:
   → validate payload
   → process (hash password, generate ID, etc.)
-  → build domain event
+  → build domain event (with metadata: userId, correlationId)
   → eventBus.publish(event)
       → event store handler: appends to domain_events (event log)
       → view model handler: updates read model (e.g., users store)
+      → WebSocket handler: forwards event to the originating client
 
-Client ← WebSocket: { event: 'UserCreated', data: {...} }
+Client ← WS: { type: 'event', event: 'identity.user_created', data: {...}, correlationId: 'abc-123' }
 ```
 
 Key separation:
+
 - **Command handlers** — validate, process, produce events. No persistence.
 - **Event store handler** — global listener, appends all events to the event log.
 - **View model handlers** — per-event listeners, update read-optimized stores.
+- **WebSocket handler** — global listener, routes events to the client that triggered the command. Strips sensitive fields (e.g., passwordHash) before sending.
 
 ## Current Folder Structure
 
 ```
 src/
+  hooks.server.ts                        # Server init: event store, user handlers, WS bridge
   lib/
     types/
-      events.ts                         # Domain event interfaces (DomainEvent, UserCreatedEvent)
+      events.ts                          # Domain event interfaces (DomainEvent, EventMetadata)
+    client/
+      ws.ts                              # Client-side WS helper (connect, onEvent, disconnect)
     server/
       commands/
-        registry.ts                     # Command registry (registerCommand, getHandler)
-        create-user.ts                  # CREATE_USER handler + spec
+        registry.ts                      # Command registry (registerCommand, getHandler)
+        create-user.ts                   # CREATE_USER handler
       events/
-        event-bus.ts                    # EventBus class (on, onAll, publish, clear)
-        event-store.ts                  # Appends all events to in-memory log
+        event-bus.ts                     # EventBus class (on, onAll, publish, clear)
+        event-store.ts                   # Appends all events to in-memory log
       identity/
-        user-store.ts                   # User view model (getUser, getUserByEmail, storeUser)
-        on-user-created.ts             # Event handler: UserCreated → user view model
+        user-store.ts                    # User view model (getUser, getUserByEmail, storeUser)
+        on-user-created.ts              # Event handler: UserCreated → user view model
+      ws/
+        connections.ts                   # Connection manager (userId → Set<WebSocket>)
+        server.ts                        # WebSocket server (upgrade, auth, disconnect)
+        on-domain-event.ts              # Event bus → WebSocket bridge
   routes/
     command/
-      +server.ts                        # POST /command — fire-and-forget dispatcher
+      +server.ts                         # POST /command — fire-and-forget dispatcher
+
+server.js                                # Custom production server (HTTP + WS)
+vite-ws-plugin.ts                        # Vite plugin: attaches WS server in dev
 ```
 
 ## Implementation Order
 
 ### Done
+
 - [x] Command registry and `/command` endpoint
 - [x] CREATE_USER command handler (validate, hash, publish event)
 - [x] Event bus (publish/subscribe)
 - [x] Event store (in-memory, appends all events)
 - [x] User view model + UserCreated event handler
 - [x] Tests for CREATE_USER (response, event store, view model, validation)
+- [x] Event metadata (userId, correlationId) threaded through command pipeline
+- [x] WebSocket server (`ws`) with connection manager and auth handshake
+- [x] Event bus → WebSocket bridge (routes events to originating client, strips sensitive data)
+- [x] Vite plugin for dev (attaches WS to Vite's HTTP server via ssrLoadModule)
+- [x] Custom production server (server.js wraps build/handler.js + WS)
+- [x] Client-side WebSocket helper (connect, onEvent, auto-reconnect)
+- [x] Server init via hooks.server.ts (event store, user handlers, WS bridge)
+- [x] Tests for connection manager and event → WS bridge
 
 ### Next
-- [ ] WebSocket server for pushing events/results to clients
+
 - [ ] MongoDB integration (replace in-memory stores)
 - [ ] Auth commands (LOGIN_USER, LOGOUT_USER) + session management
 - [ ] Role system (ADD_USER_ROLE, REMOVE_USER_ROLE)

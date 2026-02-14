@@ -13,6 +13,8 @@ npm run dev              # Start dev server
 npm run build            # Production build
 npm run preview          # Preview production build
 
+npm run server           # Production server (after build)
+
 npm run check            # Svelte type checking
 npm run lint             # Prettier + ESLint check
 npm run format           # Auto-format with Prettier
@@ -31,13 +33,16 @@ npm run test:e2e         # Run e2e tests (playwright, requires build first)
 All commands go through a single `POST /command` endpoint (fire-and-forget). The endpoint validates the command name exists and returns `200`. Results are delivered to clients via WebSocket (not HTTP response).
 
 ```
-Client → POST /command { command: 'CREATE_USER', payload: {...} }
+Client connects via WebSocket → sends auth message → server registers connection
+
+Client → POST /command { command: 'CREATE_USER', payload: {...}, correlationId: 'abc-123' }
 Client ← HTTP 200 { ok: true }
 
-Command handler → validate → process → publish domain event
+Command handler → validate → process → publish domain event (with metadata)
   → event store handler: appends to event log
   → view model handler: updates read model
-Client ← WebSocket: event data
+  → WebSocket handler: forwards event to originating client
+Client ← WS: { type: 'event', event: '...', data: {...}, correlationId: 'abc-123' }
 ```
 
 ### Key Separation
@@ -47,21 +52,28 @@ Client ← WebSocket: event data
 - **Event store** (`src/lib/server/events/event-store.ts`) — global listener, appends all events to event log.
 - **View model handlers** (`src/lib/server/identity/on-user-created.ts` etc.) — per-event listeners, update read-optimized stores.
 - **View stores** (`src/lib/server/identity/user-store.ts` etc.) — read models queried by the client.
+- **WebSocket layer** (`src/lib/server/ws/`) — connection manager, WS server, event bus → WS bridge. Uses `globalThis` for connection map to share state between server entry points and SvelteKit SSR.
 
 ### Source Layout
 
+- `src/hooks.server.ts` — server init (event store, user handlers, WS bridge)
 - `src/routes/command/` — single command endpoint
 - `src/lib/types/` — shared types (client + server), domain event interfaces
+- `src/lib/client/` — client-side utilities (WS helper)
 - `src/lib/server/commands/` — command registry + individual command handlers
 - `src/lib/server/events/` — event bus and event store
 - `src/lib/server/identity/` — identity context (user store, event handlers)
+- `src/lib/server/ws/` — WebSocket connection manager, server, event bridge
 - `src/lib/server/` — server-only code (not sent to client)
 - `src/lib/` — shared library code, importable via `$lib/`
+- `server.js` — custom production server (HTTP + WebSocket)
+- `vite-ws-plugin.ts` — Vite plugin attaching WS server in dev
 - `static/` — static assets served at root
 
 ### Test Setup (vite.config.ts)
 
 Vitest is configured with two test projects:
+
 - **client** — browser tests using Playwright for `*.svelte.{test,spec}.ts` files (excludes `src/lib/server/`)
 - **server** — Node environment tests for `*.{test,spec}.ts` files (excludes `.svelte.` test files)
 
