@@ -1,8 +1,11 @@
-export type CommandResult<T = unknown> =
-	| { ok: true; data: T }
-	| { ok: false; error: string };
+import type { EventMetadata } from '$lib/types/events';
 
-export type CommandHandler = (payload: Record<string, unknown>) => Promise<CommandResult>;
+export type CommandResult<T = unknown> = { ok: true; data: T } | { ok: false; error: string };
+
+export type CommandHandler = (
+	payload: Record<string, unknown>,
+	metadata: EventMetadata
+) => Promise<CommandResult>;
 
 const handlers = new Map<string, CommandHandler>();
 

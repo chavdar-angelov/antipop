@@ -1,3 +1,8 @@
+export interface EventMetadata {
+	readonly userId?: string;
+	readonly correlationId?: string;
+}
+
 export interface DomainEvent {
 	readonly eventId: string;
 	readonly eventType: string;
@@ -5,6 +10,7 @@ export interface DomainEvent {
 	readonly aggregateType: string;
 	readonly occurredAt: Date;
 	readonly payload: Record<string, unknown>;
+	readonly metadata?: EventMetadata;
 }
 
 export interface UserCreatedEvent extends DomainEvent {

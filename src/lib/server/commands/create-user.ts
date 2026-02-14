@@ -1,10 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { hash } from '@node-rs/argon2';
-import type { UserCreatedEvent } from '$lib/types/events';
+import type { EventMetadata, UserCreatedEvent } from '$lib/types/events';
 import { eventBus } from '$lib/server/events/event-bus';
 import { registerCommand, type CommandResult } from './registry';
 
-export async function createUser(payload: Record<string, unknown>): Promise<CommandResult> {
+export async function createUser(
+	payload: Record<string, unknown>,
+	metadata: EventMetadata
+): Promise<CommandResult> {
 	const email = (payload.email as string)?.trim();
 	const password = payload.password as string;
 
@@ -22,7 +25,8 @@ export async function createUser(payload: Record<string, unknown>): Promise<Comm
 		aggregateId: id,
 		aggregateType: 'User',
 		occurredAt: now,
-		payload: { email, passwordHash, roles }
+		payload: { email, passwordHash, roles },
+		metadata
 	};
 
 	await eventBus.publish(event);

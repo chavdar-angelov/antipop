@@ -15,10 +15,10 @@ beforeEach(() => {
 
 describe('CREATE_USER handler', () => {
 	it('should return the user without password data', async () => {
-		const result = await createUser({
-			email: 'alice@example.com',
-			password: 'securePassword123'
-		});
+		const result = await createUser(
+			{ email: 'alice@example.com', password: 'securePassword123' },
+			{}
+		);
 
 		expect(result).toMatchObject({
 			ok: true,
@@ -34,10 +34,11 @@ describe('CREATE_USER handler', () => {
 	});
 
 	it('should publish a UserCreated event to the event store', async () => {
-		const result = await createUser({
-			email: 'alice@example.com',
-			password: 'securePassword123'
-		});
+		const result = await createUser(
+			{ email: 'alice@example.com', password: 'securePassword123' },
+			{ correlationId: 'test-corr-1' }
+		);
+		if (!result.ok) throw new Error('Expected ok');
 
 		const events = getStoredEvents();
 		expect(events).toHaveLength(1);
@@ -48,21 +49,23 @@ describe('CREATE_USER handler', () => {
 				email: 'alice@example.com',
 				passwordHash: expect.any(String),
 				roles: ['customer']
-			}
+			},
+			metadata: { correlationId: 'test-corr-1' }
 		});
-		expect(result.ok && events[0].aggregateId).toBe(result.ok && result.data.id);
+		expect(events[0].aggregateId).toBe((result.data as { id: string }).id);
 	});
 
 	it('should persist the user in the view model', async () => {
-		const result = await createUser({
-			email: 'alice@example.com',
-			password: 'securePassword123'
-		});
+		const result = await createUser(
+			{ email: 'alice@example.com', password: 'securePassword123' },
+			{}
+		);
 		if (!result.ok) throw new Error('Expected ok');
 
-		const user = getUser(result.data.id);
+		const { id } = result.data as { id: string };
+		const user = getUser(id);
 		expect(user).toMatchObject({
-			id: result.data.id,
+			id,
 			email: 'alice@example.com',
 			passwordHash: expect.any(String),
 			roles: ['customer']
@@ -70,10 +73,7 @@ describe('CREATE_USER handler', () => {
 	});
 
 	it('should be findable by email in the view model', async () => {
-		await createUser({
-			email: 'alice@example.com',
-			password: 'securePassword123'
-		});
+		await createUser({ email: 'alice@example.com', password: 'securePassword123' }, {});
 
 		const user = getUserByEmail('alice@example.com');
 		expect(user).toBeDefined();
@@ -81,25 +81,25 @@ describe('CREATE_USER handler', () => {
 	});
 
 	it('should reject missing email', async () => {
-		const result = await createUser({ password: 'securePassword123' });
+		const result = await createUser({ password: 'securePassword123' }, {});
 		expect(result).toMatchObject({ ok: false, error: 'Email is required' });
 		expect(getStoredEvents()).toHaveLength(0);
 	});
 
 	it('should reject empty email', async () => {
-		const result = await createUser({ email: '', password: 'securePassword123' });
+		const result = await createUser({ email: '', password: 'securePassword123' }, {});
 		expect(result).toMatchObject({ ok: false, error: 'Email is required' });
 		expect(getStoredEvents()).toHaveLength(0);
 	});
 
 	it('should reject missing password', async () => {
-		const result = await createUser({ email: 'alice@example.com' });
+		const result = await createUser({ email: 'alice@example.com' }, {});
 		expect(result).toMatchObject({ ok: false, error: 'Password is required' });
 		expect(getStoredEvents()).toHaveLength(0);
 	});
 
 	it('should reject empty password', async () => {
-		const result = await createUser({ email: 'alice@example.com', password: '' });
+		const result = await createUser({ email: 'alice@example.com', password: '' }, {});
 		expect(result).toMatchObject({ ok: false, error: 'Password is required' });
 		expect(getStoredEvents()).toHaveLength(0);
 	});
