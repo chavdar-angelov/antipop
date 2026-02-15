@@ -45,6 +45,7 @@
 	},
 	"dependencies": {
 		"@node-rs/argon2": "^2.0.2",
+		"mongodb": "^7.1.0",
 		"ws": "^8.19.0"
 	}
 }

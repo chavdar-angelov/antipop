@@ -13,6 +13,14 @@ export interface DomainEvent {
 	readonly metadata?: EventMetadata;
 }
 
+export interface UserView {
+	id: string;
+	email: string;
+	passwordHash: string;
+	roles: string[];
+	createdAt: Date;
+}
+
 export interface UserCreatedEvent extends DomainEvent {
 	eventType: 'identity.user_created';
 	aggregateType: 'User';
