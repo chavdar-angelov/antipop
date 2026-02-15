@@ -5,6 +5,8 @@ export async function ensureIndexes(): Promise<void> {
 
 	await db.collection('users').createIndex({ email: 1 }, { unique: true });
 
+	await db.collection('newsletter_subscribers').createIndex({ email: 1 }, { unique: true });
+
 	const events = db.collection('events');
 	await events.createIndex({ eventType: 1 });
 	await events.createIndex({ aggregateId: 1 });

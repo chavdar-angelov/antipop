@@ -30,3 +30,17 @@ export interface UserCreatedEvent extends DomainEvent {
 		roles: string[];
 	};
 }
+
+export interface SubscriberView {
+	id: string;
+	email: string;
+	subscribedAt: Date;
+}
+
+export interface SubscriberAddedEvent extends DomainEvent {
+	eventType: 'newsletter.subscriber_added';
+	aggregateType: 'NewsletterSubscriber';
+	payload: {
+		email: string;
+	};
+}
