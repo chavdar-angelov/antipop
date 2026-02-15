@@ -33,9 +33,8 @@ Command handler:
   → eventBus.publish(event)
       → event store handler: appends to domain_events (event log)
       → view model handler: updates read model (e.g., users store)
-      → WebSocket handler: forwards event to the originating client
 
-Client ← WS: { type: 'event', event: 'identity.user_created', data: {...}, correlationId: 'abc-123' }
+Client ← WS: (future: custom events will push data to clients)
 ```
 
 Key separation:
@@ -43,13 +42,13 @@ Key separation:
 - **Command handlers** — validate, produce events. Return only `{ ok: true }` or `{ ok: false, error }`. No persistence, no data in response.
 - **Event store handler** — global listener, appends all events to `data/event_log.json`.
 - **View model handlers** — per-event listeners, update JSON file stores (e.g., `data/users.json`).
-- **WebSocket handler** — global listener, routes events to the client that triggered the command. Strips sensitive fields (e.g., passwordHash) before sending.
+- **Handler registration** — central wiring in `core/register-handlers.ts`, all handlers registered in one place.
 
 ## Current Folder Structure
 
 ```
 src/
-  hooks.server.ts                        # Server init: event store, user handlers, WS bridge
+  hooks.server.ts                        # Server init: registers all event handlers
   lib/
     types/
       events.ts                          # Domain event interfaces (DomainEvent, EventMetadata)
@@ -64,13 +63,13 @@ src/
         user-store.ts                    # User view model (JSON file: data/users.json)
       core/
         event-bus.ts                     # EventBus class (on, onAll, publish, clear)
+        register-handlers.ts             # Central handler registration
       events/
         identity/
           on-user-created.ts            # Event handler: UserCreated → user store
       ws/
         connections.ts                   # Connection manager (userId → Set<WebSocket>)
         server.ts                        # WebSocket server (upgrade, auth, disconnect)
-        on-domain-event.ts              # Event bus → WebSocket bridge
   routes/
     command/
       +server.ts                         # POST /command — fire-and-forget dispatcher
@@ -92,12 +91,13 @@ vite-ws-plugin.ts                        # Vite plugin: attaches WS server in de
 - [x] Tests for CREATE_USER (command returns ok/error, validation)
 - [x] Event metadata (userId, correlationId) threaded through command pipeline
 - [x] WebSocket server (`ws`) with connection manager and auth handshake
-- [x] Event bus → WebSocket bridge (routes events to originating client, strips sensitive data)
+- [x] ~~Event bus → WebSocket bridge~~ (removed — custom events will be added when needed)
 - [x] Vite plugin for dev (attaches WS to Vite's HTTP server via ssrLoadModule)
 - [x] Custom production server (server.js wraps build/handler.js + WS)
 - [x] Client-side WebSocket helper (connect, onEvent, auto-reconnect)
-- [x] Server init via hooks.server.ts (event store, user handlers, WS bridge)
-- [x] Tests for connection manager and event → WS bridge
+- [x] Server init via hooks.server.ts (central handler registration)
+- [x] Tests for connection manager
+- [x] Unit tests for event handlers (on-user-created, event-store)
 
 ### Next
 
