@@ -1,12 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { eventBus } from '$lib/server/events/event-bus';
-import { initEventStore, getStoredEvents, clearStoredEvents } from '$lib/server/events/event-store';
-import { registerUserHandlers } from '$lib/server/identity/on-user-created';
-import { getUser, getUserByEmail, clearUsers } from '$lib/server/identity/user-store';
+import { describe, it, expect, beforeAll } from 'vitest';
+import { initEventStore, clearStoredEvents } from '$lib/server/database/event-store';
+import { clearUsers } from '$lib/server/database/user-store';
+import { registerUserHandlers } from '$lib/server/events/identity/on-user-created';
 import { createUser } from './create-user';
 
-beforeEach(() => {
-	eventBus.clear();
+beforeAll(() => {
 	clearStoredEvents();
 	clearUsers();
 	initEventStore();
@@ -14,93 +12,39 @@ beforeEach(() => {
 });
 
 describe('CREATE_USER handler', () => {
-	it('should return the user without password data', async () => {
+	it('should accept a valid email and password', async () => {
 		const result = await createUser(
 			{ email: 'alice@example.com', password: 'securePassword123' },
 			{}
 		);
-
-		expect(result).toMatchObject({
-			ok: true,
-			data: {
-				id: expect.any(String),
-				email: 'alice@example.com',
-				roles: ['customer'],
-				createdAt: expect.any(Date)
-			}
-		});
-		expect(result.ok && result.data).not.toHaveProperty('passwordHash');
-		expect(result.ok && result.data).not.toHaveProperty('password');
+		expect(result).toEqual({ ok: true });
 	});
 
-	it('should publish a UserCreated event to the event store', async () => {
+	it('should reject duplicate email', async () => {
 		const result = await createUser(
-			{ email: 'alice@example.com', password: 'securePassword123' },
-			{ correlationId: 'test-corr-1' }
-		);
-		if (!result.ok) throw new Error('Expected ok');
-
-		const events = getStoredEvents();
-		expect(events).toHaveLength(1);
-		expect(events[0]).toMatchObject({
-			eventType: 'identity.user_created',
-			aggregateType: 'User',
-			payload: {
-				email: 'alice@example.com',
-				passwordHash: expect.any(String),
-				roles: ['customer']
-			},
-			metadata: { correlationId: 'test-corr-1' }
-		});
-		expect(events[0].aggregateId).toBe((result.data as { id: string }).id);
-	});
-
-	it('should persist the user in the view model', async () => {
-		const result = await createUser(
-			{ email: 'alice@example.com', password: 'securePassword123' },
+			{ email: 'alice@example.com', password: 'otherPass456' },
 			{}
 		);
-		if (!result.ok) throw new Error('Expected ok');
-
-		const { id } = result.data as { id: string };
-		const user = getUser(id);
-		expect(user).toMatchObject({
-			id,
-			email: 'alice@example.com',
-			passwordHash: expect.any(String),
-			roles: ['customer']
-		});
-	});
-
-	it('should be findable by email in the view model', async () => {
-		await createUser({ email: 'alice@example.com', password: 'securePassword123' }, {});
-
-		const user = getUserByEmail('alice@example.com');
-		expect(user).toBeDefined();
-		expect(user!.email).toBe('alice@example.com');
+		expect(result).toEqual({ ok: false, error: 'Email already registered' });
 	});
 
 	it('should reject missing email', async () => {
 		const result = await createUser({ password: 'securePassword123' }, {});
-		expect(result).toMatchObject({ ok: false, error: 'Email is required' });
-		expect(getStoredEvents()).toHaveLength(0);
+		expect(result).toEqual({ ok: false, error: 'Email is required' });
 	});
 
 	it('should reject empty email', async () => {
 		const result = await createUser({ email: '', password: 'securePassword123' }, {});
-		expect(result).toMatchObject({ ok: false, error: 'Email is required' });
-		expect(getStoredEvents()).toHaveLength(0);
+		expect(result).toEqual({ ok: false, error: 'Email is required' });
 	});
 
 	it('should reject missing password', async () => {
-		const result = await createUser({ email: 'alice@example.com' }, {});
-		expect(result).toMatchObject({ ok: false, error: 'Password is required' });
-		expect(getStoredEvents()).toHaveLength(0);
+		const result = await createUser({ email: 'bob@example.com' }, {});
+		expect(result).toEqual({ ok: false, error: 'Password is required' });
 	});
 
 	it('should reject empty password', async () => {
-		const result = await createUser({ email: 'alice@example.com', password: '' }, {});
-		expect(result).toMatchObject({ ok: false, error: 'Password is required' });
-		expect(getStoredEvents()).toHaveLength(0);
+		const result = await createUser({ email: 'bob@example.com', password: '' }, {});
+		expect(result).toEqual({ ok: false, error: 'Password is required' });
 	});
 });

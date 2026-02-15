@@ -47,11 +47,11 @@ Client ← WS: { type: 'event', event: '...', data: {...}, correlationId: 'abc-1
 
 ### Key Separation
 
-- **Command handlers** (`src/lib/server/commands/`) — validate, process, produce domain events. No persistence.
-- **Event bus** (`src/lib/server/events/event-bus.ts`) — in-process pub/sub connecting commands to handlers.
-- **Event store** (`src/lib/server/events/event-store.ts`) — global listener, appends all events to event log.
-- **View model handlers** (`src/lib/server/identity/on-user-created.ts` etc.) — per-event listeners, update read-optimized stores.
-- **View stores** (`src/lib/server/identity/user-store.ts` etc.) — read models queried by the client.
+- **Command handlers** (`src/lib/server/commands/`) — validate, produce domain events. Return only `{ ok: true }` or `{ ok: false, error }`. No persistence, no data in response.
+- **Event bus** (`src/lib/server/core/event-bus.ts`) — in-process pub/sub connecting commands to handlers.
+- **Event store** (`src/lib/server/database/event-store.ts`) — global listener, appends all events to `data/event_log.json`.
+- **Database stores** (`src/lib/server/database/`) — JSON file persistence (`data/users.json`, `data/event_log.json`). Read models queried by command handlers and clients.
+- **View model handlers** (`src/lib/server/events/identity/on-user-created.ts` etc.) — per-event listeners, update database stores.
 - **WebSocket layer** (`src/lib/server/ws/`) — connection manager, WS server, event bus → WS bridge. Uses `globalThis` for connection map to share state between server entry points and SvelteKit SSR.
 
 ### Source Layout
@@ -61,8 +61,9 @@ Client ← WS: { type: 'event', event: '...', data: {...}, correlationId: 'abc-1
 - `src/lib/types/` — shared types (client + server), domain event interfaces
 - `src/lib/client/` — client-side utilities (WS helper)
 - `src/lib/server/commands/` — command registry + individual command handlers
-- `src/lib/server/events/` — event bus and event store
-- `src/lib/server/identity/` — identity context (user store, event handlers)
+- `src/lib/server/core/` — core infrastructure (event bus)
+- `src/lib/server/database/` — JSON file stores (user-store, event-store) persisting to `data/`
+- `src/lib/server/events/` — event handlers grouped by domain context (e.g., `events/identity/`)
 - `src/lib/server/ws/` — WebSocket connection manager, server, event bridge
 - `src/lib/server/` — server-only code (not sent to client)
 - `src/lib/` — shared library code, importable via `$lib/`

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { WebSocket } from 'ws';
-import { eventBus } from '$lib/server/events/event-bus';
+import { eventBus } from '$lib/server/core/event-bus';
 import { addConnection, clearConnections } from './connections';
 import { registerWebSocketHandler } from './on-domain-event';
 
