@@ -1,74 +1,58 @@
 # Database Schema (Document DB)
 
-This is a visual, high-level representation of the collections and relationships.
+## Collections
 
-## Roles (User Capabilities)
 
-```mermaid
-flowchart TB
-  U[User]
-  U --> C[customer<br/>browse & purchase]
-  U --> M[manager<br/>manage brands]
-  U --> MOD[moderator<br/>add products<br/>fulfill orders]
-  U --> SA[superadmin<br/>admin all]
-```
+### Users
 
-## Collections and Relations (Overview)
+* email
+* password
 
-```mermaid
-flowchart LR
-  USERS[users]
-  BRANDS[brands]
-  PRODUCTS[products]
-  CARTS[carts]
-  ORDERS[orders]
+### Profiles
 
-  USERS -->|owns| BRANDS
-  BRANDS -->|has| PRODUCTS
-  USERS -->|has| CARTS
-  USERS -->|places| ORDERS
-  PRODUCTS -->|line items| ORDERS
-```
+* belongs to user
+* role - customer, influencer, brand owner, moderator, super admin
+* firstname
+* lastname
+* company details...
 
-## Document Structure (Tree View)
+### Brands
 
-```mermaid
-mindmap
-  root((database))
-    users
-      roles
-        customer
-        manager
-        moderator
-        superadmin
-    brands
-      ownerUserId
-    products
-      brandId
-      variants
-        sku
-        price
-        attributes
-        inventory
-    carts
-      userId
-      items
-        productId
-        variantSku
-        priceSnapshot
-    orders
-      userId
-      items
-        productId
-        brandId
-        titleSnapshot
-        variantSnapshot
-        priceSnapshot
-      payment
-```
+* belongs to profile with brand owner role
+* name
+* description
+* links
+* ...
 
-## Notes
+### Products
 
-- Relations are references by ID (document DB style).
-- Orders store snapshots to keep history immutable.
-- Role permissions are enforced in application logic.
+* belongs to brand
+* name
+* description
+* variants
+* category
+* tags
+
+### Inventory
+
+* belongs to product
+* size
+* color
+* count
+
+### Orders
+
+* belongs to profile
+* has many items of product variant
+
+### Campaigns
+
+* belongs to brand
+* start_date
+* end_date
+* discount (%)
+* participants of type profile with role influencer
+
+### Subscribers
+
+* email
