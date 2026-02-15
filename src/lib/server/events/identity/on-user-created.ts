@@ -1,6 +1,6 @@
 import type { UserCreatedEvent } from '$lib/types/events';
-import { eventBus } from '$lib/server/events/event-bus';
-import { storeUser } from './user-store';
+import { eventBus } from '$lib/server/core/event-bus';
+import { storeUser } from '$lib/server/database/user-store';
 
 export function registerUserHandlers(): void {
 	eventBus.on<UserCreatedEvent>('identity.user_created', (event) => {

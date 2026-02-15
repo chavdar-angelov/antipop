@@ -15,7 +15,8 @@ The project is a greenfield SvelteKit 5 app. We're building a CQRS-lite + event-
 | MongoDB driver   | Native `mongodb` (not Mongoose)       | Lighter, full control over document mapping, no schema duplication.                                |
 | Password hashing | `@node-rs/argon2`                     | Argon2 is the industry standard. `@node-rs/argon2` is a fast Rust-backed binding.                  |
 | Event bus        | Custom in-process (plain TS)          | Simple pub/sub, no external deps. Sufficient for MVP.                                              |
-| Event storage    | Dual-write (event store + view model) | Events stored in `domain_events` for audit/replay. View models are the read-optimized projections. |
+| Persistence      | JSON files in `data/`                 | Simple file-based storage for MVP. Event log + view models persisted as JSON.                      |
+| Event storage    | Dual-write (event store + view model) | Events stored in `data/event_log.json` for audit/replay. View models are the read-optimized projections. |
 
 ## Architecture
 
@@ -39,9 +40,9 @@ Client ← WS: { type: 'event', event: 'identity.user_created', data: {...}, cor
 
 Key separation:
 
-- **Command handlers** — validate, process, produce events. No persistence.
-- **Event store handler** — global listener, appends all events to the event log.
-- **View model handlers** — per-event listeners, update read-optimized stores.
+- **Command handlers** — validate, produce events. Return only `{ ok: true }` or `{ ok: false, error }`. No persistence, no data in response.
+- **Event store handler** — global listener, appends all events to `data/event_log.json`.
+- **View model handlers** — per-event listeners, update JSON file stores (e.g., `data/users.json`).
 - **WebSocket handler** — global listener, routes events to the client that triggered the command. Strips sensitive fields (e.g., passwordHash) before sending.
 
 ## Current Folder Structure
@@ -58,12 +59,14 @@ src/
       commands/
         registry.ts                      # Command registry (registerCommand, getHandler)
         create-user.ts                   # CREATE_USER handler
-      events/
+      database/
+        event-store.ts                   # Appends all events to data/event_log.json
+        user-store.ts                    # User view model (JSON file: data/users.json)
+      core/
         event-bus.ts                     # EventBus class (on, onAll, publish, clear)
-        event-store.ts                   # Appends all events to in-memory log
-      identity/
-        user-store.ts                    # User view model (getUser, getUserByEmail, storeUser)
-        on-user-created.ts              # Event handler: UserCreated → user view model
+      events/
+        identity/
+          on-user-created.ts            # Event handler: UserCreated → user store
       ws/
         connections.ts                   # Connection manager (userId → Set<WebSocket>)
         server.ts                        # WebSocket server (upgrade, auth, disconnect)
@@ -83,9 +86,10 @@ vite-ws-plugin.ts                        # Vite plugin: attaches WS server in de
 - [x] Command registry and `/command` endpoint
 - [x] CREATE_USER command handler (validate, hash, publish event)
 - [x] Event bus (publish/subscribe)
-- [x] Event store (in-memory, appends all events)
-- [x] User view model + UserCreated event handler
-- [x] Tests for CREATE_USER (response, event store, view model, validation)
+- [x] Event store (JSON file persistence: data/event_log.json)
+- [x] User view model (JSON file persistence: data/users.json) + UserCreated event handler
+- [x] Duplicate email validation in CREATE_USER
+- [x] Tests for CREATE_USER (command returns ok/error, validation)
 - [x] Event metadata (userId, correlationId) threaded through command pipeline
 - [x] WebSocket server (`ws`) with connection manager and auth handshake
 - [x] Event bus → WebSocket bridge (routes events to originating client, strips sensitive data)
@@ -97,7 +101,7 @@ vite-ws-plugin.ts                        # Vite plugin: attaches WS server in de
 
 ### Next
 
-- [ ] MongoDB integration (replace in-memory stores)
+- [ ] MongoDB integration (replace JSON file stores)
 - [ ] Auth commands (LOGIN_USER, LOGOUT_USER) + session management
 - [ ] Role system (ADD_USER_ROLE, REMOVE_USER_ROLE)
 - [ ] Brand commands (CREATE_BRAND, UPDATE_BRAND, DELETE_BRAND)

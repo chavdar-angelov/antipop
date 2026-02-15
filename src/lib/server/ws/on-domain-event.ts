@@ -1,4 +1,4 @@
-import { eventBus } from '$lib/server/events/event-bus';
+import { eventBus } from '$lib/server/core/event-bus';
 import { sendToUser } from './connections';
 
 const SENSITIVE_KEYS = new Set(['passwordHash', 'password']);

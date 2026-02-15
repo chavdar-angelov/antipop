@@ -1,6 +1,6 @@
 import type { EventMetadata } from '$lib/types/events';
 
-export type CommandResult<T = unknown> = { ok: true; data: T } | { ok: false; error: string };
+export type CommandResult = { ok: true } | { ok: false; error: string };
 
 export type CommandHandler = (
 	payload: Record<string, unknown>,
