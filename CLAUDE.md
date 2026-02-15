@@ -41,30 +41,30 @@ Client ← HTTP 200 { ok: true }
 Command handler → validate → process → publish domain event (with metadata)
   → event store handler: appends to event log
   → view model handler: updates read model
-  → WebSocket handler: forwards event to originating client
-Client ← WS: { type: 'event', event: '...', data: {...}, correlationId: 'abc-123' }
+Client ← WS: (future: custom events will push data to clients)
 ```
 
 ### Key Separation
 
 - **Command handlers** (`src/lib/server/commands/`) — validate, produce domain events. Return only `{ ok: true }` or `{ ok: false, error }`. No persistence, no data in response.
 - **Event bus** (`src/lib/server/core/event-bus.ts`) — in-process pub/sub connecting commands to handlers.
-- **Event store** (`src/lib/server/database/event-store.ts`) — global listener, appends all events to `data/event_log.json`.
+- **Event store** (`src/lib/server/database/event-store.ts`) — appends events to `data/event_log.json`.
 - **Database stores** (`src/lib/server/database/`) — JSON file persistence (`data/users.json`, `data/event_log.json`). Read models queried by command handlers and clients.
 - **View model handlers** (`src/lib/server/events/identity/on-user-created.ts` etc.) — per-event listeners, update database stores.
-- **WebSocket layer** (`src/lib/server/ws/`) — connection manager, WS server, event bus → WS bridge. Uses `globalThis` for connection map to share state between server entry points and SvelteKit SSR.
+- **Handler registration** (`src/lib/server/core/register-handlers.ts`) — central wiring of all event handlers to the event bus.
+- **WebSocket layer** (`src/lib/server/ws/`) — connection manager, WS server. Uses `globalThis` for connection map to share state between server entry points and SvelteKit SSR.
 
 ### Source Layout
 
-- `src/hooks.server.ts` — server init (event store, user handlers, WS bridge)
+- `src/hooks.server.ts` — server init (registers all event handlers)
 - `src/routes/command/` — single command endpoint
 - `src/lib/types/` — shared types (client + server), domain event interfaces
 - `src/lib/client/` — client-side utilities (WS helper)
 - `src/lib/server/commands/` — command registry + individual command handlers
-- `src/lib/server/core/` — core infrastructure (event bus)
+- `src/lib/server/core/` — core infrastructure (event bus, handler registration)
 - `src/lib/server/database/` — JSON file stores (user-store, event-store) persisting to `data/`
 - `src/lib/server/events/` — event handlers grouped by domain context (e.g., `events/identity/`)
-- `src/lib/server/ws/` — WebSocket connection manager, server, event bridge
+- `src/lib/server/ws/` — WebSocket connection manager, server
 - `src/lib/server/` — server-only code (not sent to client)
 - `src/lib/` — shared library code, importable via `$lib/`
 - `server.js` — custom production server (HTTP + WebSocket)

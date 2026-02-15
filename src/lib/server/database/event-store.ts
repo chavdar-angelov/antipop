@@ -1,7 +1,6 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { DomainEvent } from '$lib/types/events';
-import { eventBus } from '$lib/server/core/event-bus';
 
 interface EventRow {
 	eventId: string;
@@ -38,12 +37,10 @@ function writeAll(events: DomainEvent[]): void {
 	writeFileSync(FILE_PATH, JSON.stringify(rows, null, '\t') + '\n');
 }
 
-export function initEventStore(): void {
-	eventBus.onAll((event) => {
-		const events = readAll();
-		events.push(event);
-		writeAll(events);
-	});
+export function appendEvent(event: DomainEvent): void {
+	const events = readAll();
+	events.push(event);
+	writeAll(events);
 }
 
 export function getStoredEvents(): DomainEvent[] {

@@ -1,14 +1,15 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { initEventStore, clearStoredEvents } from '$lib/server/database/event-store';
+import { eventBus } from '$lib/server/core/event-bus';
+import { clearStoredEvents } from '$lib/server/database/event-store';
 import { clearUsers } from '$lib/server/database/user-store';
-import { registerUserHandlers } from '$lib/server/events/identity/on-user-created';
+import { registerHandlers } from '$lib/server/core/register-handlers';
 import { createUser } from './create-user';
 
 beforeAll(() => {
+	eventBus.clear();
 	clearStoredEvents();
 	clearUsers();
-	initEventStore();
-	registerUserHandlers();
+	registerHandlers();
 });
 
 describe('CREATE_USER handler', () => {

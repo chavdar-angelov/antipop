@@ -11,7 +11,7 @@ Every domain event can carry optional metadata:
 | `userId`        | `string?` | The user who triggered the command. Used to route the event back via WebSocket. |
 | `correlationId` | `string?` | Client-provided ID to match a command to its resulting events.                  |
 
-Metadata is set by the `/command` endpoint and threaded through command handlers into the published event. The WebSocket bridge uses `userId` to determine which client receives the event, and includes `correlationId` in the WS message so the client can correlate responses.
+Metadata is set by the `/command` endpoint and threaded through command handlers into the published event. `userId` identifies who triggered the command. `correlationId` lets the client match a command to its resulting events.
 
 ## Identity
 
