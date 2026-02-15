@@ -1,14 +1,16 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { clearUsers, getUserByEmail } from '$lib/server/database/user-store';
-import type { UserCreatedEvent } from '$lib/types/events';
+import { getDb } from '$lib/server/database/mongo';
+import type { UserCreatedEvent, UserView } from '$lib/types/events';
 import { onUserCreated } from './on-user-created';
 
-beforeAll(() => {
-	clearUsers();
+beforeAll(async () => {
+	const db = getDb();
+	await db.collection('users').deleteMany({});
+	await db.collection('events').deleteMany({});
 });
 
 describe('onUserCreated', () => {
-	it('should store user with all fields', () => {
+	it('should store user and event in a transaction', async () => {
 		const event: UserCreatedEvent = {
 			eventId: 'evt-1',
 			eventType: 'identity.user_created',
@@ -22,14 +24,24 @@ describe('onUserCreated', () => {
 			}
 		};
 
-		onUserCreated(event);
+		await onUserCreated(event);
 
-		expect(getUserByEmail('handler-test@example.com')).toEqual({
+		const user = await getDb()
+			.collection<UserView>('users')
+			.findOne({ email: 'handler-test@example.com' }, { projection: { _id: 0 } });
+
+		expect(user).toEqual({
 			id: 'user-1',
 			email: 'handler-test@example.com',
 			passwordHash: 'hashed_pw',
 			roles: ['buyer'],
 			createdAt: new Date('2025-01-15T10:00:00Z')
 		});
+
+		const storedEvent = await getDb()
+			.collection('events')
+			.findOne({ eventId: 'evt-1' }, { projection: { _id: 0 } });
+
+		expect(storedEvent).toEqual(event);
 	});
 });

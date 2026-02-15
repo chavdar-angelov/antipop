@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { eventBus } from '$lib/server/core/event-bus';
 import { clearStoredEvents } from '$lib/server/database/event-store';
-import { clearUsers } from '$lib/server/database/user-store';
+import { getDb } from '$lib/server/database/mongo';
 import { registerHandlers } from '$lib/server/core/register-handlers';
 import { createUser } from './create-user';
 
-beforeAll(() => {
+beforeAll(async () => {
 	eventBus.clear();
-	clearStoredEvents();
-	clearUsers();
+	await clearStoredEvents();
+	await getDb().collection('users').deleteMany({});
 	registerHandlers();
 });
 
@@ -22,10 +22,7 @@ describe('CREATE_USER handler', () => {
 	});
 
 	it('should reject duplicate email', async () => {
-		const result = await createUser(
-			{ email: 'alice@example.com', password: 'otherPass456' },
-			{}
-		);
+		const result = await createUser({ email: 'alice@example.com', password: 'otherPass456' }, {});
 		expect(result).toEqual({ ok: false, error: 'Email already registered' });
 	});
 

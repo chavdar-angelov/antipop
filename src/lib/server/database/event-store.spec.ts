@@ -2,12 +2,12 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import type { DomainEvent } from '$lib/types/events';
 import { appendEvent, getStoredEvents, clearStoredEvents } from './event-store';
 
-beforeAll(() => {
-	clearStoredEvents();
+beforeAll(async () => {
+	await clearStoredEvents();
 });
 
 describe('event-store', () => {
-	it('should persist events', () => {
+	it('should persist events', async () => {
 		const event: DomainEvent = {
 			eventId: 'evt-store-1',
 			eventType: 'identity.user_created',
@@ -17,12 +17,12 @@ describe('event-store', () => {
 			payload: { email: 'store-test@example.com' }
 		};
 
-		appendEvent(event);
+		await appendEvent(event);
 
-		expect(getStoredEvents()).toContainEqual(event);
+		expect(await getStoredEvents()).toContainEqual(event);
 	});
 
-	it('should serialize and deserialize dates correctly', () => {
+	it('should serialize and deserialize dates correctly', async () => {
 		const event: DomainEvent = {
 			eventId: 'evt-store-2',
 			eventType: 'catalog.item_listed',
@@ -32,15 +32,15 @@ describe('event-store', () => {
 			payload: { title: 'Vintage jacket' }
 		};
 
-		appendEvent(event);
+		await appendEvent(event);
 
-		expect(getStoredEvents()).toContainEqual(event);
+		expect(await getStoredEvents()).toContainEqual(event);
 	});
 
-	it('should clear all events', () => {
-		clearStoredEvents();
+	it('should clear all events', async () => {
+		await clearStoredEvents();
 
-		const stored = getStoredEvents();
+		const stored = await getStoredEvents();
 		expect(stored).toEqual([]);
 	});
 });
