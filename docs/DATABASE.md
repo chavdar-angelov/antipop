@@ -11,10 +11,13 @@
 ### Profiles
 
 * belongs to user
-* role - customer, influencer, brand owner, moderator, super admin
 * firstname
 * lastname
-* company details...
+* role - customer, influencer, brand owner, moderator, super admin
+* slug - valid for brands and influencers only
+* company name
+* company address
+* VAT number
 
 ### Brands
 
@@ -35,15 +38,17 @@
 
 ### Inventory
 
-* belongs to product
-* size
-* color
+* belongs to product variant (SKU-level)
 * count
 
 ### Orders
 
 * belongs to profile
-* has many items of product variant
+* items (snapshot of product variant: name, price, size, color, quantity)
+* status
+* shipping address
+* total
+* timestamps (created, updated)
 
 ### Campaigns
 
@@ -51,7 +56,9 @@
 * start_date
 * end_date
 * discount (%)
-* participants of type profile with role influencer
+* participants (references to profiles with influencer role)
+
+> If querying "which campaigns is influencer X in?" becomes common, consider a separate CampaignParticipants collection.
 
 ### Subscribers
 
