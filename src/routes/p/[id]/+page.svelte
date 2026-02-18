@@ -209,6 +209,7 @@
 		border: var(--border);
 		padding: 0.4rem 0.85rem;
 		background: #fff;
+		color: #333;
 		font-family: monospace;
 		font-size: 0.85rem;
 		cursor: pointer;
@@ -247,27 +248,10 @@
 		gap: 0.5rem;
 	}
 
-	h2 {
-		font-size: 0.85rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-
 	.description p {
 		font-size: 0.85rem;
 		color: #666;
 		line-height: 1.6;
 	}
 
-	/* Tags */
-	.tags {
-		display: flex;
-		gap: 0.5rem;
-	}
-
-	.tag {
-		border: var(--border);
-		padding: 0.3rem 0.7rem;
-		font-size: 0.8rem;
-	}
 </style>

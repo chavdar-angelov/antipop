@@ -98,27 +98,6 @@
 </div>
 
 <style>
-	.page {
-		max-width: var(--max-width);
-		margin: 0 auto;
-		padding: 2rem var(--gap);
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-	}
-
-	h1 {
-		font-size: 1rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-
-	h2 {
-		font-size: 0.85rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-
 	.empty,
 	.confirmation {
 		display: flex;
@@ -137,46 +116,10 @@
 		gap: 3rem;
 	}
 
-	form {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
 	.row {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 1rem;
-	}
-
-	label {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: #666;
-	}
-
-	input {
-		border: var(--border);
-		padding: 0.5rem;
-		font-family: monospace;
-		font-size: 0.9rem;
-		background: #fff;
-	}
-
-	button {
-		border: var(--border);
-		padding: 0.7rem;
-		background: #333;
-		color: #fff;
-		font-family: monospace;
-		font-size: 0.9rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		cursor: pointer;
 	}
 
 	.summary {

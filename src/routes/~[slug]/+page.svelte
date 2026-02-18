@@ -66,7 +66,7 @@
 
 	<section class="section">
 		<h2>Products</h2>
-		<div class="product-grid">
+		<div class="grid-4">
 			{#each products as product}
 				<a href="/p/{product.id}" class="product-card">
 					<svg viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
@@ -156,45 +156,5 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-	}
-
-	h2 {
-		font-size: 1rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-
-	.product-grid {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: var(--gap);
-	}
-
-	.product-card {
-		border: var(--border);
-		display: block;
-		overflow: hidden;
-	}
-
-	.product-card svg {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
-
-	.product-info {
-		padding: 0.75rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		border-top: var(--border);
-	}
-
-	.product-name {
-		font-size: 0.85rem;
-	}
-
-	.product-price {
-		font-weight: bold;
 	}
 </style>
