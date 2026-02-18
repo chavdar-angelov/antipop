@@ -62,21 +62,6 @@
 </div>
 
 <style>
-	.page {
-		max-width: var(--max-width);
-		margin: 0 auto;
-		padding: 2rem var(--gap);
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-	}
-
-	h1 {
-		font-size: 1rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-
 	.empty {
 		display: flex;
 		flex-direction: column;

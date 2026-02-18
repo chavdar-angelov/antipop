@@ -15,6 +15,37 @@
 	}));
 
 	const tags = ['Winter', 'Streetwear', 'Vintage', 'Minimal', 'Bold', 'Essentials'];
+
+	const posts = [
+		{
+			id: 1,
+			user: { name: 'maya.style', avatar: 'M' },
+			product: { id: 3, name: 'Oversized Tee', brand: 'Brand 1' },
+			caption: 'This tee is everything. Paired it with wide legs and platforms.',
+			likes: 234
+		},
+		{
+			id: 2,
+			user: { name: 'jkwear', avatar: 'J' },
+			product: { id: 7, name: 'Cargo Pants', brand: 'Brand 3' },
+			caption: 'Finally found cargos that actually fit right. The quality is insane.',
+			likes: 189
+		},
+		{
+			id: 3,
+			user: { name: 'noa.fits', avatar: 'N' },
+			product: { id: 1, name: 'Graphic Hoodie', brand: 'Brand 2' },
+			caption: 'Cozy season starter. This hoodie runs oversized — I love it.',
+			likes: 412
+		},
+		{
+			id: 4,
+			user: { name: 'alex.drip', avatar: 'A' },
+			product: { id: 5, name: 'Utility Vest', brand: 'Brand 4' },
+			caption: 'Layering piece of the year. Works with literally anything.',
+			likes: 167
+		}
+	];
 </script>
 
 <svelte:head>
@@ -38,9 +69,9 @@
 <section class="section">
 	<div class="inner">
 		<h2>Categories</h2>
-		<div class="categories">
+		<div class="grid-3">
 			{#each categories as cat}
-				<a href="/c/{cat.toLowerCase()}" class="category-card">
+				<a href="/c/{cat.toLowerCase()}" class="product-card">
 					<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
 						<rect width="300" height="200" fill="#eee" />
 						<text
@@ -61,7 +92,7 @@
 <section class="section">
 	<div class="inner">
 		<h2>Products</h2>
-		<div class="product-grid">
+		<div class="grid-4">
 			{#each products as product}
 				<a href="/p/{product.id}" class="product-card">
 					<svg viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
@@ -88,8 +119,44 @@
 
 <section class="section">
 	<div class="inner">
+		<h2>Worn by</h2>
+		<div class="posts">
+			{#each posts as post}
+				<div class="post">
+					<div class="post-header">
+						<span class="post-avatar">{post.user.avatar}</span>
+						<a href="/@{post.user.name}" class="post-user">{post.user.name}</a>
+					</div>
+					<a href="/post/{post.id}">
+						<svg viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
+							<rect width="300" height="380" fill="#f0ede8" />
+							<text
+								x="150"
+								y="180"
+								text-anchor="middle"
+								font-family="monospace"
+								font-size="14"
+								fill="#c4b8a8">PHOTO</text
+							>
+						</svg>
+					</a>
+					<div class="post-body">
+						<p class="post-caption">{post.caption}</p>
+						<a href="/p/{post.product.id}" class="post-product">
+							{post.product.brand} — {post.product.name}
+						</a>
+						<span class="post-likes">{post.likes} likes</span>
+					</div>
+				</div>
+			{/each}
+		</div>
+	</div>
+</section>
+
+<section class="section">
+	<div class="inner">
 		<h2>Brands</h2>
-		<div class="brands-row">
+		<div class="grid-6">
 			{#each brands as brand}
 				<a href="/~{brand.slug}" class="brand-card">
 					<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
@@ -160,80 +227,6 @@
 		gap: 1rem;
 	}
 
-	h2 {
-		font-size: 1rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-
-	/* Categories */
-	.categories {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--gap);
-	}
-
-	.category-card {
-		border: var(--border);
-		display: block;
-		overflow: hidden;
-	}
-
-	.category-card svg {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
-
-	/* Product grid */
-	.product-grid {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: var(--gap);
-	}
-
-	.product-card {
-		border: var(--border);
-		display: block;
-		overflow: hidden;
-	}
-
-	.product-card svg {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
-
-	.product-info {
-		padding: 0.75rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		border-top: var(--border);
-	}
-
-	.product-brand {
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: #999;
-	}
-
-	.product-name {
-		font-size: 0.85rem;
-	}
-
-	.product-price {
-		font-weight: bold;
-	}
-
-	/* Brands */
-	.brands-row {
-		display: grid;
-		grid-template-columns: repeat(6, 1fr);
-		gap: var(--gap);
-	}
-
 	.brand-card {
 		border: var(--border);
 		display: flex;
@@ -254,20 +247,73 @@
 		font-size: 0.8rem;
 	}
 
-	/* Tags */
-	.tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
+	/* Influencer posts */
+	.posts {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--gap);
 	}
 
-	.tag {
+	.post {
 		border: var(--border);
-		padding: 0.4rem 0.85rem;
-		font-size: 0.85rem;
+		background: #fff;
+		overflow: hidden;
 	}
 
-	/* Newsletter */
+	.post-header {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.6rem 0.75rem;
+	}
+
+	.post-avatar {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		background: #333;
+		color: #fff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.65rem;
+		font-weight: bold;
+	}
+
+	.post-user {
+		font-size: 0.8rem;
+		font-weight: bold;
+	}
+
+	.post svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.post-body {
+		padding: 0.75rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+
+	.post-caption {
+		font-size: 0.8rem;
+		line-height: 1.5;
+		color: #444;
+	}
+
+	.post-product {
+		font-size: 0.75rem;
+		color: #999;
+	}
+
+	.post-likes {
+		font-size: 0.7rem;
+		color: #aaa;
+	}
+
 	.newsletter {
 		border-top: var(--border);
 		padding-top: 2rem;
@@ -278,27 +324,15 @@
 	}
 
 	.newsletter-form {
-		display: flex;
-		gap: 0.5rem;
+		flex-direction: row;
 		max-width: 400px;
 	}
 
 	.newsletter-form input {
 		flex: 1;
-		border: var(--border);
-		padding: 0.5rem;
-		font-family: monospace;
-		font-size: 0.85rem;
-		background: #fff;
 	}
 
 	.newsletter-form button {
-		border: var(--border);
 		padding: 0.5rem 1rem;
-		background: #333;
-		color: #fff;
-		font-family: monospace;
-		font-size: 0.85rem;
-		cursor: pointer;
 	}
 </style>
