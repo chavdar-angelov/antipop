@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
 
+	const slug = $derived(page.params.slug ?? '');
 	const id = $derived(page.params.id ?? '');
 
 	const post = {
-		influencer: { name: 'Jane', slug: 'jane' },
 		products: [
 			{ id: 1, name: 'Oversized Tee', brand: 'Brand 1', brandSlug: 'brand-1', price: '39.99' },
 			{ id: 2, name: 'Cargo Pants', brand: 'Brand 2', brandSlug: 'brand-2', price: '69.99' },
@@ -14,7 +14,7 @@
 </script>
 
 <svelte:head>
-	<title>Post {id} by @{post.influencer.name} — Antipop</title>
+	<title>Post {id} by ~{slug} — Antipop</title>
 </svelte:head>
 
 <div class="post-page">
@@ -35,7 +35,7 @@
 	<div class="sidebar">
 		<div class="author">
 			<span class="author-label">Posted by</span>
-			<a href="/@{post.influencer.slug}">@{post.influencer.name}</a>
+			<a href="/~{slug}">~{slug}</a>
 		</div>
 
 		<h2>Tagged products</h2>

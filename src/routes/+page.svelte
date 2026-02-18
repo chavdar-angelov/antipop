@@ -127,7 +127,7 @@
 						<span class="post-avatar">{post.user.avatar}</span>
 						<a href="/@{post.user.name}" class="post-user">{post.user.name}</a>
 					</div>
-					<a href="/post/{post.id}">
+					<a href="/~{post.user.name}/p/{post.id}">
 						<svg viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
 							<rect width="300" height="380" fill="#f0ede8" />
 							<text
