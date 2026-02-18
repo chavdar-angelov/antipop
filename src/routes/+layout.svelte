@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { cart } from '$lib/client/cart.svelte';
 
 	let { children } = $props();
 </script>
@@ -20,6 +21,7 @@
 		</nav>
 
 		<div class="auth">
+			<a href="/cart">Cart{#if cart.length > 0} ({cart.length}){/if}</a>
 			<a href="/sign-in">Sign in</a>
 			<a href="/sign-up" class="sign-up">Sign up</a>
 		</div>
