@@ -1,49 +1,44 @@
-import { WebSocketServer, type WebSocket } from 'ws';
+import nodeAdapter from 'crossws/adapters/node';
 import type { Server } from 'node:http';
 import { addConnection, removeConnection } from './connections';
 
-export function attachWebSocketServer(httpServer: Server): WebSocketServer {
-	const wss = new WebSocketServer({ noServer: true });
+export function createWebSocketHandler() {
+	return nodeAdapter({
+		hooks: {
+			message(peer, message) {
+				let msg: { type: string; token?: string };
+				try {
+					msg = message.json();
+				} catch {
+					return;
+				}
 
-	httpServer.on('upgrade', (request, socket, head) => {
-		// Only handle /ws path
-		const url = new URL(request.url ?? '/', `http://${request.headers.host}`);
-		if (url.pathname !== '/ws') {
-			socket.destroy();
-			return;
+				if (msg.type === 'auth' && typeof msg.token === 'string') {
+					// For now, token is just the userId directly.
+					// Will be replaced with real session validation later.
+					peer.context.userId = msg.token;
+					addConnection(msg.token, peer);
+					peer.send(JSON.stringify({ type: 'authenticated' }));
+				}
+			},
+			close(peer) {
+				const userId = peer.context.userId as string | undefined;
+				if (userId) {
+					removeConnection(userId, peer);
+				}
+			}
 		}
+	});
+}
 
-		wss.handleUpgrade(request, socket, head, (ws) => {
-			wss.emit('connection', ws, request);
-		});
+export function attachWebSocketServer(httpServer: Server) {
+	const ws = createWebSocketHandler();
+
+	httpServer.on('upgrade', (req, socket, head) => {
+		const url = new URL(req.url ?? '/', `http://${req.headers.host}`);
+		if (url.pathname !== '/ws') return;
+		ws.handleUpgrade(req, socket, head);
 	});
 
-	wss.on('connection', (ws: WebSocket) => {
-		let userId: string | null = null;
-
-		ws.on('message', (raw) => {
-			let msg: { type: string; token?: string };
-			try {
-				msg = JSON.parse(String(raw));
-			} catch {
-				return;
-			}
-
-			if (msg.type === 'auth' && typeof msg.token === 'string') {
-				// For now, token is just the userId directly.
-				// Will be replaced with real session validation later.
-				userId = msg.token;
-				addConnection(userId, ws);
-				ws.send(JSON.stringify({ type: 'authenticated' }));
-			}
-		});
-
-		ws.on('close', () => {
-			if (userId) {
-				removeConnection(userId, ws);
-			}
-		});
-	});
-
-	return wss;
+	return ws;
 }
