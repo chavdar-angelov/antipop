@@ -120,7 +120,7 @@
 
 		<div class="tags">
 			{#each product.tags as tag}
-				<a href="/t/{tag.toLowerCase()}" class="tag">#{tag}</a>
+				<span class="tag">#{tag}</span>
 			{/each}
 		</div>
 	</div>

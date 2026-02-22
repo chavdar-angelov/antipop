@@ -17,7 +17,7 @@
 		<nav>
 			<a href="/c/men">Men</a>
 			<a href="/c/women">Women</a>
-			<a href="/c/accessories">Accessories</a>
+			<a href="/c/kids">Kids</a>
 		</nav>
 
 		<div class="auth">
@@ -43,7 +43,7 @@
 			<strong>Shop</strong>
 			<a href="/c/men">Men</a>
 			<a href="/c/women">Women</a>
-			<a href="/c/accessories">Accessories</a>
+			<a href="/c/kids">Kids</a>
 		</div>
 		<div class="footer-col">
 			<strong>Company</strong>
