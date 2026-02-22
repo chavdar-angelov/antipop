@@ -4,19 +4,98 @@
 	const gender = $derived(page.params.gender ?? '');
 	const category = $derived(page.params.category ?? '');
 
-	const subcategories: Record<string, string[]> = {
-		shoes: ['Sneakers', 'Boots', 'Sandals', 'Loafers'],
-		't-shirts': ['Graphic', 'Plain', 'Oversized', 'Cropped'],
-		pants: ['Jeans', 'Cargo', 'Chinos', 'Shorts'],
-		jackets: ['Denim', 'Bomber', 'Puffer', 'Leather'],
-		hoodies: ['Zip-up', 'Pullover', 'Oversized'],
-		accessories: ['Hats', 'Belts', 'Sunglasses', 'Jewellery'],
-		dresses: ['Mini', 'Midi', 'Maxi', 'Shirt dress'],
-		tops: ['Blouses', 'Crop tops', 'Tank tops', 'Knits'],
-		bags: ['Tote', 'Crossbody', 'Backpack', 'Clutch'],
-		sets: ['Tracksuit', 'Matching', 'Pyjama']
+	const genderSubcategories: Record<string, Record<string, string[]>> = {
+		men: {
+			clothes: [
+				'T-shirts',
+				'Shirts',
+				'Pants',
+				'Jeans',
+				'Shorts',
+				'Jackets',
+				'Coats',
+				'Hoodies',
+				'Sweaters & cardigans',
+				'Suits & blazers',
+				'Swimwear',
+				'Underwear'
+			],
+			shoes: ['Sneakers', 'Boots', 'Sandals', 'Low shoes', 'Slippers', 'Sports shoes'],
+			accessories: [
+				'Bags & backpacks',
+				'Hats & caps',
+				'Belts',
+				'Wallets & cases',
+				'Watches',
+				'Sunglasses',
+				'Scarves',
+				'Gloves'
+			]
+		},
+		women: {
+			clothes: [
+				'Dresses',
+				'Blouses & tunics',
+				'Tops',
+				'T-shirts',
+				'Skirts',
+				'Pants',
+				'Jeans',
+				'Shorts',
+				'Jackets',
+				'Coats',
+				'Blazers',
+				'Hoodies',
+				'Sweaters & cardigans',
+				'Jumpsuits',
+				'Swimwear',
+				'Underwear'
+			],
+			shoes: [
+				'Sneakers',
+				'Ankle boots',
+				'Boots',
+				'Sandals',
+				'High heels',
+				'Ballet flats',
+				'Low shoes',
+				'Slippers',
+				'Sports shoes'
+			],
+			accessories: [
+				'Bags & backpacks',
+				'Jewellery',
+				'Scarves & wraps',
+				'Belts',
+				'Wallets & cases',
+				'Sunglasses',
+				'Hats & caps',
+				'Hair accessories',
+				'Gloves'
+			]
+		},
+		kids: {
+			clothes: [
+				'T-shirts',
+				'Tops',
+				'Pants',
+				'Jeans',
+				'Shorts',
+				'Dresses',
+				'Skirts',
+				'Jackets & coats',
+				'Sweaters',
+				'Hoodies',
+				'Sets',
+				'Bodysuits',
+				'Underwear'
+			],
+			shoes: ['Sneakers', 'Boots', 'Sandals', 'Rain boots', 'Slippers', 'Sports shoes'],
+			accessories: ['Bags', 'Hats & caps', 'Scarves', 'Sunglasses', 'Gloves']
+		}
 	};
 
+	const subcategories = $derived(genderSubcategories[gender] ?? genderSubcategories.men);
 	const subs = $derived(category ? (subcategories[category] ?? []) : []);
 
 	const products = Array.from({ length: 8 }, (_, i) => ({
