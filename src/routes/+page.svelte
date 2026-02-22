@@ -218,13 +218,6 @@
 	.section {
 		max-width: var(--max-width);
 		margin: 0 auto;
-		padding: 2rem var(--gap);
-	}
-
-	.inner {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
 	}
 
 	.brand-card {

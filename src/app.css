@@ -1,3 +1,7 @@
+@import './sections.css';
+@import './lists.css';
+@import './profiles.css';
+
 *,
 *::before,
 *::after {

@@ -1,0 +1,42 @@
+/* Shared profile info block (brand page, influencer page) */
+
+.profile-info {
+	border-bottom: var(--border);
+	padding: 1.5rem var(--gap);
+}
+
+.profile-info-inner {
+	display: flex;
+	gap: 1.5rem;
+	align-items: flex-start;
+}
+
+.profile-avatar {
+	width: 80px;
+	height: 80px;
+	flex-shrink: 0;
+	border: var(--border);
+}
+
+.profile-avatar svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.profile-details {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.profile-details h1 {
+	font-size: 1.1rem;
+	letter-spacing: 0.05em;
+}
+
+.profile-description {
+	font-size: 0.85rem;
+	color: #666;
+	line-height: 1.5;
+}

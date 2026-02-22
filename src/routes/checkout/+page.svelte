@@ -116,12 +116,6 @@
 		gap: 3rem;
 	}
 
-	.row {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 1rem;
-	}
-
 	.summary {
 		border: var(--border);
 		padding: 1.5rem;

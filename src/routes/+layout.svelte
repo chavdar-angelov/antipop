@@ -22,6 +22,7 @@
 
 		<div class="auth">
 			<a href="/cart">Cart{#if cart.length > 0} ({cart.length}){/if}</a>
+			<a href="/account">Account</a>
 			<a href="/sign-in">Sign in</a>
 			<a href="/sign-up" class="sign-up">Sign up</a>
 		</div>

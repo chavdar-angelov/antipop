@@ -19,9 +19,9 @@
 </svelte:head>
 
 <div class="profile-page">
-	<section class="info">
-		<div class="info-inner">
-			<div class="avatar">
+	<section class="profile-info">
+		<div class="profile-info-inner">
+			<div class="profile-avatar avatar--round">
 				<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 					<rect width="100" height="100" fill="#eee" />
 					<text
@@ -34,9 +34,9 @@
 					>
 				</svg>
 			</div>
-			<div class="details">
+			<div class="profile-details">
 				<h1>@{slug}</h1>
-				<p class="bio">
+				<p class="profile-description">
 					Placeholder bio for this influencer. Fashion enthusiast, always on the lookout for
 					independent brands.
 				</p>
@@ -88,48 +88,9 @@
 		margin: 0 auto;
 	}
 
-	/* Info */
-	.info {
-		border-bottom: var(--border);
-		padding: 2rem var(--gap);
-	}
-
-	.info-inner {
-		display: flex;
-		gap: 1.5rem;
-		align-items: flex-start;
-	}
-
-	.avatar {
-		width: 80px;
-		height: 80px;
-		flex-shrink: 0;
-		border: var(--border);
+	.avatar--round {
 		border-radius: 50%;
 		overflow: hidden;
-	}
-
-	.avatar svg {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-
-	.details {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	h1 {
-		font-size: 1.1rem;
-		letter-spacing: 0.05em;
-	}
-
-	.bio {
-		font-size: 0.85rem;
-		color: #666;
-		line-height: 1.5;
 	}
 
 	.stats {
@@ -137,14 +98,6 @@
 		gap: 1.5rem;
 		font-size: 0.8rem;
 		color: #999;
-	}
-
-	/* Sections */
-	.section {
-		padding: 2rem var(--gap);
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
 	}
 
 	.post-card {
