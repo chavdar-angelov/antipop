@@ -15,10 +15,12 @@
 
 ## Customer
 
-/account - account settings (role, company details, password)
-/account/orders - list of customer orders with status
-/account/orders/{id} - order details
-/account/favourites - favourite products
+/dashboard - customer dashboard (redirects to orders)
+/dashboard/orders - list of customer orders with status
+/dashboard/orders/{id} - order details
+/dashboard/returns - list of returns with status
+/dashboard/favourites - favourite products
+/dashboard/account - personal details, shipping address, delete profile
 /cart - shopping cart
 /checkout - checkout (address, order confirmation)
 

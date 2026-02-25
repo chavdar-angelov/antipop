@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Personal details — Antipop</title>
+	<title>Account — Antipop</title>
 </svelte:head>
 
 <h2>Personal details</h2>
@@ -51,8 +51,39 @@
 	<button type="submit">Save changes</button>
 </form>
 
+<div class="delete-section">
+	<h2>Delete profile</h2>
+	<p class="danger-text">
+		This will permanently delete your account and all associated data. This action cannot be
+		undone.
+	</p>
+	<button class="danger-btn" onclick={() => {}}>Delete my account</button>
+</div>
+
 <style>
 	form {
 		max-width: 480px;
+	}
+
+	.delete-section {
+		border-top: var(--border);
+		padding-top: 1.5rem;
+		margin-top: 0.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.danger-text {
+		color: #666;
+		font-size: 0.85rem;
+		line-height: 1.5;
+		max-width: 480px;
+	}
+
+	.danger-btn {
+		background: #c00;
+		border-color: #c00;
+		max-width: 200px;
 	}
 </style>

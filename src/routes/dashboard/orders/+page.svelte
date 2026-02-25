@@ -14,7 +14,7 @@
 			<span class="list-date">{order.date}</span>
 			<span class="list-status">{order.status}</span>
 			<span class="list-price">{order.total}</span>
-			<a href="/account/orders/{order.id}" class="list-link">View</a>
+			<a href="/dashboard/orders/{order.id}" class="list-link">View</a>
 		</div>
 	{/each}
 </div>

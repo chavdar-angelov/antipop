@@ -12,7 +12,7 @@
 			<span class="list-date">{ret.date}</span>
 			<span class="list-status">{ret.status}</span>
 			<span class="list-price">{ret.total}</span>
-			<a href="/account/returns/{ret.id}" class="list-link">View</a>
+			<a href="/dashboard/returns/{ret.id}" class="list-link">View</a>
 		</div>
 	{/each}
 </div>
