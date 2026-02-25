@@ -32,7 +32,7 @@
 				</div>
 			{:else if role === 'brand'}
 				<div class="sidebar-section">
-					<a class="sidebar-item" class:active={path === '/dashboard/brand-profile'} href="/dashboard/brand-profile">
+					<a class="sidebar-item" class:active={path === '/dashboard/overview'} href="/dashboard/overview">
 						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M3 2v12h10V2H3zM2 1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm2 3h8v1H4V4zm0 2.5h8v1H4v-1zm0 2.5h5v1H4V9z"/></svg>
 						Overview
 					</a>
@@ -63,6 +63,29 @@
 					<a class="sidebar-item" class:active={path === '/dashboard/affiliates'} href="/dashboard/affiliates">
 						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M4.715 6.542L3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M11.285 9.458l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 5.671A3 3 0 0 0 7.414 10.5l.586-.586a1.002 1.002 0 0 0 .154-.199 2 2 0 0 1-.861-3.337L9.12 4.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287z"/></svg>
 						Affiliates
+					</a>
+				</div>
+			{:else if role === 'influencer'}
+				<div class="sidebar-section">
+					<a class="sidebar-item" class:active={path === '/dashboard/purchases'} href="/dashboard/purchases">
+						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M2 1.5A.5.5 0 0 1 2.5 1h11a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-13zM3 2v12h10V2H3zm2 1h6v1H5V3zm0 2.5h6v1H5v-1zM5 8h6v1H5V8z"/></svg>
+						Purchases
+					</a>
+					<a class="sidebar-item" class:active={path === '/dashboard/returns'} href="/dashboard/returns">
+						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M2 2.5A.5.5 0 0 1 2.5 2h3a.5.5 0 0 1 0 1H3v10h10V3h-2.5a.5.5 0 0 1 0-1h3a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11z"/><path d="M8 1a.5.5 0 0 1 .354.146l2 2a.5.5 0 1 1-.708.708L8.5 2.707V8.5a.5.5 0 0 1-1 0V2.707L6.354 3.854a.5.5 0 1 1-.708-.708l2-2A.5.5 0 0 1 8 1z"/></svg>
+						Returns
+					</a>
+					<a class="sidebar-item" class:active={path === '/dashboard/favourites'} href="/dashboard/favourites">
+						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748z"/></svg>
+						Favourites
+					</a>
+					<a class="sidebar-item" class:active={path === '/dashboard/my-affiliate'} href="/dashboard/my-affiliate">
+						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-1a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm4.5 6c.28 0 .5-.22.5-.5C13 10.57 10.86 9 8 9s-5 1.57-5 3.5c0 .28.22.5.5.5h9zM8 10c2.34 0 4 1.21 4 2.5H4C4 11.21 5.66 10 8 10z"/><path d="M2 3.5A1.5 1.5 0 0 1 3.5 2h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 1-1 0v-1zm10 0A1.5 1.5 0 0 0 10.5 2h-1a.5.5 0 0 0 0 1h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 0 1 0v-1z"/></svg>
+						Affiliate
+					</a>
+					<a class="sidebar-item" href="/@influencer">
+						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1zm-.5 2a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .146.354l3 3a.5.5 0 0 0 .708-.708L8 8.293V3.5a.5.5 0 0 0-.5-.5z"/></svg>
+						My public profile
 					</a>
 				</div>
 			{/if}
