@@ -18,6 +18,7 @@
 			<a href="/c/men">Men</a>
 			<a href="/c/women">Women</a>
 			<a href="/c/kids">Kids</a>
+			<a href="/campaigns">Campaigns</a>
 		</nav>
 
 		<div class="auth">
