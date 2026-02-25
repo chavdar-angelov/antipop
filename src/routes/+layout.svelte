@@ -3,12 +3,40 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { cart } from '$lib/client/cart.svelte';
 
-	let { children } = $props();
+	let { data, children } = $props();
+
+	function onRoleChange(e: Event) {
+		const value = (e.target as HTMLSelectElement).value;
+		if (value === 'public') {
+			document.cookie = 'debug-role=; path=/; max-age=0';
+		} else {
+			document.cookie = `debug-role=${value}; path=/`;
+		}
+		location.reload();
+	}
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
+
+{#if data.debug}
+	<div class="debug-bar">
+		<div class="debug-inner">
+			<span class="debug-title">Debug bar</span>
+			<label class="debug-label">
+				Login as
+				<select class="debug-select" value={data.role} onchange={onRoleChange}>
+					<option value="public">Public</option>
+					<option value="customer">Customer</option>
+					<option value="brand">Brand</option>
+					<option value="influencer">Influencer</option>
+					<option value="admin">Super Admin</option>
+				</select>
+			</label>
+		</div>
+	</div>
+{/if}
 
 <header>
 	<div class="header-inner">
@@ -55,6 +83,45 @@
 </footer>
 
 <style>
+	.debug-bar {
+		background: #333;
+		color: #fff;
+	}
+
+	.debug-inner {
+		max-width: var(--max-width);
+		margin: 0 auto;
+		padding: 0.4rem var(--gap);
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		font-size: 0.75rem;
+	}
+
+	.debug-title {
+		font-weight: bold;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.debug-label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: #ccc;
+		font-size: 0.75rem;
+		text-transform: none;
+	}
+
+	.debug-select {
+		font-family: monospace;
+		font-size: 0.75rem;
+		padding: 0.15rem 0.35rem;
+		border: 1px solid #666;
+		background: #444;
+		color: #fff;
+	}
+
 	header {
 		border-bottom: var(--border);
 		background: #fff;

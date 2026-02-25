@@ -15,9 +15,9 @@
 
 ## Customer
 
-/dashboard - customer dashboard (redirects to orders)
-/dashboard/orders - list of customer orders with status
-/dashboard/orders/{id} - order details
+/dashboard - customer dashboard (redirects to purchases)
+/dashboard/purchases - list of customer purchases with status
+/dashboard/purchases/{id} - purchase details
 /dashboard/returns - list of returns with status
 /dashboard/favourites - favourite products
 /dashboard/account - personal details, shipping address, delete profile
@@ -26,16 +26,17 @@
 
 ## Brand Dashboard
 
-/dashboard - brand dashboard overview
+/dashboard - brand dashboard (redirects to brand-profile)
+/dashboard/brand-profile - brand name, description, logo
 /dashboard/products - manage products
-/dashboard/products/new - add a product
 /dashboard/products/{id} - edit a product
-/dashboard/orders - brand orders list
+/dashboard/orders - brand orders list (customer orders received)
 /dashboard/orders/{id} - order details, change status
-/dashboard/moderators - manage moderators
 /dashboard/campaigns - list campaigns
-/dashboard/campaigns/new - create a campaign
 /dashboard/campaigns/{id} - edit a campaign
+/dashboard/team - manage team members
+/dashboard/settings - store settings, payout, return policy
+/dashboard/affiliates - affiliate performance tracking
 
 ## Influencer Dashboard
 
