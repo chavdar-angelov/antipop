@@ -1,93 +1,74 @@
 <svelte:head>
-	<title>Brand profile — Antipop</title>
+	<title>Overview — Antipop</title>
 </svelte:head>
 
-<h2>Brand profile</h2>
-<div class="profile-row">
-	<div class="logo-upload">
-		<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-			<rect width="120" height="120" fill="#eee" />
-			<text
-				x="60"
-				y="55"
-				text-anchor="middle"
-				font-family="monospace"
-				font-size="10"
-				fill="#bbb">LOGO</text
-			>
-			<text
-				x="60"
-				y="75"
-				text-anchor="middle"
-				font-family="monospace"
-				font-size="8"
-				fill="#ccc">Click to upload</text
-			>
-		</svg>
+<h2>Overview</h2>
+<div class="stats-grid">
+	<div class="stat-card">
+		<span class="stat-value">€2,340</span>
+		<span class="stat-label">Revenue this month</span>
 	</div>
-	<form onsubmit={(e) => e.preventDefault()}>
-		<label>
-			Brand name
-			<input type="text" value="Acme Apparel" />
-		</label>
-		<label>
-			Brand URL
-			<span class="url-prefix">antipop.bg/~</span>
-			<input type="text" value="acme-apparel" />
-		</label>
-		<label>
-			Tagline
-			<input type="text" value="Independent streetwear since 2020" />
-		</label>
-		<label>
-			Description
-			<textarea rows="4">We create bold, sustainable streetwear for the modern individual.</textarea>
-		</label>
-		<label>
-			Website
-			<input type="url" value="https://acme-apparel.com" />
-		</label>
-		<button type="submit">Save changes</button>
-	</form>
+	<div class="stat-card">
+		<span class="stat-value">47</span>
+		<span class="stat-label">Orders this month</span>
+	</div>
+	<div class="stat-card">
+		<span class="stat-value">12</span>
+		<span class="stat-label">Products listed</span>
+	</div>
+	<div class="stat-card">
+		<span class="stat-value">3</span>
+		<span class="stat-label">Active campaigns</span>
+	</div>
+</div>
+
+<h2>Recent orders</h2>
+<div class="list">
+	{#each [
+		{ id: 'BRD-004', date: '2026-02-20', customer: 'Jane D.', status: 'Processing', total: '€89.98' },
+		{ id: 'BRD-003', date: '2026-02-18', customer: 'Alex M.', status: 'Shipped', total: '€59.99' },
+		{ id: 'BRD-002', date: '2026-02-15', customer: 'Sam K.', status: 'Delivered', total: '€179.97' }
+	] as order}
+		<div class="list-row">
+			<span class="list-id">{order.id}</span>
+			<span class="list-date">{order.date}</span>
+			<span class="list-customer">{order.customer}</span>
+			<span class="list-status">{order.status}</span>
+			<span class="list-price">{order.total}</span>
+		</div>
+	{/each}
 </div>
 
 <style>
-	.profile-row {
-		display: flex;
-		gap: 2rem;
-		align-items: flex-start;
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--gap);
 	}
 
-	.logo-upload {
-		width: 120px;
-		flex-shrink: 0;
+	.stat-card {
 		border: var(--border);
-		cursor: pointer;
-	}
-
-	.logo-upload svg {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
-
-	form {
-		max-width: 480px;
-		flex: 1;
-	}
-
-	.url-prefix {
-		font-size: 0.8rem;
-		color: #999;
-	}
-
-	textarea {
-		border: var(--border);
-		padding: 0.5rem;
-		font-family: monospace;
-		font-size: 0.9rem;
 		background: #fff;
-		resize: vertical;
-		width: 100%;
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.stat-value {
+		font-size: 1.25rem;
+		font-weight: bold;
+	}
+
+	.stat-label {
+		font-size: 0.75rem;
+		color: #999;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.list-customer {
+		flex: 1;
+		font-size: 0.85rem;
 	}
 </style>

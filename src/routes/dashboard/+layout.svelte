@@ -34,11 +34,15 @@
 				<div class="sidebar-section">
 					<a class="sidebar-item" class:active={path === '/dashboard/brand-profile'} href="/dashboard/brand-profile">
 						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M3 2v12h10V2H3zM2 1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm2 3h8v1H4V4zm0 2.5h8v1H4v-1zm0 2.5h5v1H4V9z"/></svg>
-						Brand profile
+						Overview
 					</a>
 					<a class="sidebar-item" class:active={path === '/dashboard/products'} href="/dashboard/products">
 						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M8 1a2.5 2.5 0 0 0-2.5 2.5V4h5v-.5A2.5 2.5 0 0 0 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4h-3.5zM2 5v9h12V5H2z"/></svg>
 						Products
+					</a>
+					<a class="sidebar-item" class:active={path === '/dashboard/inventory'} href="/dashboard/inventory">
+						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h11A1.5 1.5 0 0 1 15 3.5v1A1.5 1.5 0 0 1 13.5 6h-11A1.5 1.5 0 0 1 1 4.5v-1zM2.5 3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-11zM2 7.5v6a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-6h-1v5H3v-5H2zm4.5 1a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H7a.5.5 0 0 1-.5-.5z"/></svg>
+						Inventory
 					</a>
 					<a class="sidebar-item" class:active={path === '/dashboard/orders'} href="/dashboard/orders">
 						<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M2 1.5A.5.5 0 0 1 2.5 1h11a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-13zM3 2v12h10V2H3zm2 1h6v1H5V3zm0 2.5h6v1H5v-1zM5 8h6v1H5V8z"/></svg>
