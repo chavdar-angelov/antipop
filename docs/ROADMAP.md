@@ -1,42 +1,54 @@
 # Roadmap
 
-Living roadmap for product ideas and delivery progress.
+Frontend page coverage per user flow. Checked = all necessary pages exist.
 
-## How to use
+## Public
 
-- Keep items short and outcome-focused.
-- Use checkboxes to track progress.
-- Add dates or links when a task is time-bound or has specs.
+- [x] Sign-up
+- [x] Sign-in
+- [x] Browse products
+- [x] Browse posts
+- [x] Add products to cart
 
-## Pages checklist
+## Customer
 
-- [ ] Home / landing
-- [ ] Product listing (category)
-- [ ] Product detail
-- [ ] Cart
-- [ ] Checkout
-- [ ] Order confirmation
-- [ ] Customer account
-- [ ] Order history
-- [ ] Seller/brand dashboard
-- [ ] Create/edit product
-- [ ] Orders management
-- [ ] Admin / moderation
+- [x] Browse products
+- [x] Browse posts
+- [x] Browse categories
+- [x] Browse tags
+- [x] Add products to cart
+- [x] Checkout
+- [ ] Like (favourite) products
+- [ ] Like (favourite) posts
+- [ ] Follow brands
+- [X] Follow influencers
+- [x] View purchases
+- [x] View favourites
+- [x] Return products
+- [x] Create influencer profile
+- [x] Create brand profile
+- [x] Update personal information
+- [ ] Change password
+- [x] Delete profile
 
-## Now
+## Influencer
 
-- [ ] Define core seller onboarding flow
-- [ ] Create MVP product listing schema (sizes, colors, inventory)
-- [ ] Design storefront and product detail page structure
+*Everything from Customer, plus:*
 
-## Next
+- [X] Add posts
+- [X] Tag products to posts
+- [x] Join campaigns
+- [x] View affiliate purchases
 
-- [ ] Add checkout flow and payment provider integration
-- [ ] Implement order management for sellers
-- [ ] Add shipping rates and fulfillment options
+## Brand Owner
 
-## Later
+*Everything from Customer, plus:*
 
-- [ ] Add promotions, discounts, and coupons
-- [ ] Add reviews and ratings
-- [ ] Add analytics dashboard for sellers
+- [ ] Add / update products
+- [ ] Add / update product variants
+- [x] Track orders
+- [x] Track returns
+- [x] Add / remove members
+- [ ] Create campaigns
+- [ ] Approve / remove / invite influencers to campaigns
+- [x] Track affiliate purchases
