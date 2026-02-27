@@ -3,8 +3,12 @@
 
 	const slug = $derived(page.params.slug ?? '');
 
+	let following = $state(false);
+	const followers = 248;
+
 	const posts = Array.from({ length: 9 }, (_, i) => ({
 		id: i + 1,
+		likes: Math.floor(Math.random() * 300) + 10,
 		product: { id: i + 1, name: `Product ${i + 1}`, brand: `Brand ${(i % 3) + 1}` }
 	}));
 
@@ -41,9 +45,17 @@
 					independent brands.
 				</p>
 				<div class="stats">
-					<span>{posts.length} posts</span>
+					<span><strong>{posts.length}</strong> posts</span>
+					<span><strong>{followers}</strong> followers</span>
 					<span>{campaigns.length} campaigns</span>
 				</div>
+				<button
+					class="follow-btn"
+					class:following
+					onclick={() => (following = !following)}
+				>
+					{following ? 'Following' : 'Follow'}
+				</button>
 			</div>
 		</div>
 	</section>
@@ -51,6 +63,13 @@
 	<section class="section">
 		<h2>Posts</h2>
 		<div class="grid-3">
+			<button class="post-card add-post" onclick={() => {}}>
+				<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+					<rect width="300" height="300" fill="#f8f8f8" />
+					<line x1="150" y1="100" x2="150" y2="200" stroke="#ccc" stroke-width="2" />
+					<line x1="100" y1="150" x2="200" y2="150" stroke="#ccc" stroke-width="2" />
+				</svg>
+			</button>
 			{#each posts as post}
 				<a href="/@{slug}/p/{post.id}" class="post-card">
 					<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
@@ -64,6 +83,7 @@
 							fill="#bbb">300 × 300</text
 						>
 					</svg>
+					<span class="post-likes">{post.likes} &#9829;</span>
 				</a>
 			{/each}
 		</div>
@@ -100,16 +120,50 @@
 		color: #999;
 	}
 
+	.follow-btn {
+		margin-top: 0.5rem;
+		padding: 0.4rem 1.5rem;
+		font-size: 0.8rem;
+		width: fit-content;
+	}
+
+	.follow-btn.following {
+		background: #fff;
+		color: #000;
+	}
+
 	.post-card {
 		border: var(--border);
 		display: block;
 		overflow: hidden;
 	}
 
+	.add-post {
+		cursor: pointer;
+		padding: 0;
+		background: none;
+	}
+
+	.add-post:hover svg rect {
+		fill: #f0f0f0;
+	}
+
+	.post-card {
+		position: relative;
+	}
+
 	.post-card svg {
 		display: block;
 		width: 100%;
 		height: auto;
+	}
+
+	.post-likes {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		font-size: 0.75rem;
+		color: #999;
 	}
 
 	/* Campaigns */

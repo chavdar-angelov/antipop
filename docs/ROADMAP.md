@@ -21,11 +21,11 @@ Frontend page coverage per user flow. Checked = all necessary pages exist.
 - [ ] Like (favourite) products
 - [ ] Like (favourite) posts
 - [ ] Follow brands
-- [ ] Follow influencers
+- [X] Follow influencers
 - [x] View purchases
 - [x] View favourites
 - [x] Return products
-- [ ] Create influencer profile
+- [x] Create influencer profile
 - [x] Create brand profile
 - [x] Update personal information
 - [ ] Change password
