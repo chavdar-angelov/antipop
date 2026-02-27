@@ -4,6 +4,10 @@ import type { LayoutServerLoad } from './$types';
 export const load: LayoutServerLoad = ({ cookies, url }) => {
 	const role = cookies.get('debug-role') ?? 'public';
 
+	if (role === 'public') {
+		redirect(307, '/sign-in');
+	}
+
 	if (url.pathname === '/dashboard') {
 		if (role === 'brand') {
 			redirect(307, '/dashboard/overview');

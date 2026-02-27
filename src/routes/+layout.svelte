@@ -51,9 +51,12 @@
 
 		<div class="auth">
 			<a href="/cart">Cart{#if cart.length > 0} ({cart.length}){/if}</a>
-			<a href="/dashboard">Dashboard</a>
-			<a href="/sign-in">Sign in</a>
-			<a href="/sign-up" class="sign-up">Sign up</a>
+			{#if data.role !== 'public'}
+				<a href="/dashboard">Dashboard</a>
+			{:else}
+				<a href="/sign-in">Sign in</a>
+				<a href="/sign-up" class="sign-up">Sign up</a>
+			{/if}
 		</div>
 	</div>
 </header>
@@ -106,6 +109,7 @@
 
 	.debug-label {
 		display: flex;
+		flex-direction: row;
 		align-items: center;
 		gap: 0.5rem;
 		color: #ccc;
