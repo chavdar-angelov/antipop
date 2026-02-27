@@ -4,6 +4,17 @@
 		name: `Brand ${i + 1}`,
 		slug: `brand-${i + 1}`
 	}));
+
+	const posts = [
+		{ id: 1, slug: 'fashionista', author: '@fashionista' },
+		{ id: 2, slug: 'streetstyle_bg', author: '@streetstyle_bg' },
+		{ id: 3, slug: 'minimalist.jane', author: '@minimalist.jane' },
+		{ id: 4, slug: 'urbanfit', author: '@urbanfit' },
+		{ id: 5, slug: 'fashionista', author: '@fashionista' },
+		{ id: 6, slug: 'streetstyle_bg', author: '@streetstyle_bg' },
+		{ id: 7, slug: 'minimalist.jane', author: '@minimalist.jane' },
+		{ id: 8, slug: 'urbanfit', author: '@urbanfit' }
+	];
 </script>
 
 <svelte:head>
@@ -95,6 +106,30 @@
 	</div>
 </section>
 
+<section class="section">
+	<div class="inner">
+		<h2>Posts</h2>
+		<div class="grid-4">
+			{#each posts as post}
+				<a href="/@{post.slug}/p/{post.id}" class="post-card">
+					<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+						<rect width="300" height="300" fill="#eee" />
+						<text
+							x="150"
+							y="150"
+							text-anchor="middle"
+							font-family="monospace"
+							font-size="14"
+							fill="#bbb">300 × 300</text
+						>
+					</svg>
+					<span class="post-author">{post.author}</span>
+				</a>
+			{/each}
+		</div>
+	</div>
+</section>
+
 <style>
 	.hero {
 		border-bottom: var(--border);
@@ -150,5 +185,24 @@
 
 	.brand-card span {
 		font-size: 0.8rem;
+	}
+
+	.post-card {
+		border: var(--border);
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+
+	.post-card svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.post-author {
+		font-size: 0.8rem;
+		padding: 0.5rem 0.75rem;
+		color: #666;
 	}
 </style>

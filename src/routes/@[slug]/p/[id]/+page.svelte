@@ -35,7 +35,7 @@
 	<div class="sidebar">
 		<div class="author">
 			<span class="author-label">Posted by</span>
-			<a href="/~{slug}">~{slug}</a>
+			<a href="/@{slug}">@{slug}</a>
 		</div>
 
 		<h2>Tagged products</h2>
