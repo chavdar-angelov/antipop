@@ -35,8 +35,8 @@ Frontend page coverage per user flow. Checked = all necessary pages exist.
 
 *Everything from Customer, plus:*
 
-- [ ] Add posts
-- [ ] Tag products to posts
+- [X] Add posts
+- [X] Tag products to posts
 - [x] Join campaigns
 - [x] View affiliate purchases
 
